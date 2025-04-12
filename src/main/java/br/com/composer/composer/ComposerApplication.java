@@ -1,4 +1,4 @@
-package com.br.composer.composer;
+package br.com.composer.composer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
