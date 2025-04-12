@@ -2,15 +2,15 @@ package br.com.composer.composer.controller;
 
 import br.com.composer.composer.entity.Genre;
 import br.com.composer.composer.services.GenreService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.net.URI;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/genres")
+@Controller
+@RequestMapping("/genres")
 public class GenreController {
 
     private final GenreService genreService;
@@ -19,44 +19,89 @@ public class GenreController {
         this.genreService = genreService;
     }
 
+    // ========== MÉTODOS PARA A INTERFACE WEB ==========
+
     @GetMapping
-    public ResponseEntity<List<Genre>> getAllGenres() {
-        List<Genre> genres = genreService.findAll();
-        return ResponseEntity.ok(genres);
+    public String listGenres(Model model) {
+        model.addAttribute("genres", genreService.findAll());
+        model.addAttribute("title", "Genres List");
+        return "genres/list";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Genre> getGenreById(@PathVariable Integer id) {
-        Genre genre = genreService.findById(id);
-        return ResponseEntity.ok(genre);
+    @GetMapping("/new")
+    public String showGenreForm(Model model) {
+        model.addAttribute("genre", new Genre());
+        model.addAttribute("title", "New Genre");
+        return "genres/form";
     }
 
-    @PostMapping
-    public ResponseEntity<Genre> createGenre(@RequestBody Genre genre) {
+    @PostMapping("/save")
+    public String saveGenre(@ModelAttribute Genre genre, RedirectAttributes redirectAttributes) {
         Genre savedGenre = genreService.save(genre);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedGenre.getId())
-                .toUri();
-        return ResponseEntity.created(location).body(savedGenre);
+        redirectAttributes.addFlashAttribute("successMessage", 
+            "Genre '" + savedGenre.getName() + "' saved successfully!");
+        return "redirect:/genres";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Genre> updateGenre(@PathVariable Integer id, @RequestBody Genre genre) {
-        Genre updatedGenre = genreService.update(id, genre);
-        return ResponseEntity.ok(updatedGenre);
+    @GetMapping("/edit/{id}")
+    public String editGenre(@PathVariable Integer id, Model model) {
+        Genre genre = genreService.findById(id);
+        model.addAttribute("genre", genre);
+        model.addAttribute("title", "Edit Genre");
+        return "genres/form";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGenre(@PathVariable Integer id) {
+    @GetMapping("/delete/{id}")
+    public String deleteGenre(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        Genre genre = genreService.findById(id);
         genreService.delete(id);
-        return ResponseEntity.noContent().build();
+        redirectAttributes.addFlashAttribute("successMessage", 
+            "Genre '" + genre.getName() + "' deleted successfully!");
+        return "redirect:/genres";
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<List<Genre>> getPopularGenres() {
-        List<Genre> genres = genreService.findPopularGenres();
-        return ResponseEntity.ok(genres);
+    public String showPopularGenres(Model model) {
+        model.addAttribute("genres", genreService.findPopularGenres());
+        model.addAttribute("title", "Popular Genres");
+        return "genres/list";
+    }
+
+    // ========== MÉTODOS DA API (REST) ==========
+
+    @GetMapping("/api")
+    @ResponseBody
+    public List<Genre> getAllGenresApi() {
+        return genreService.findAll();
+    }
+
+    @GetMapping("/api/{id}")
+    @ResponseBody
+    public Genre getGenreByIdApi(@PathVariable Integer id) {
+        return genreService.findById(id);
+    }
+
+    @PostMapping("/api")
+    @ResponseBody
+    public Genre createGenreApi(@RequestBody Genre genre) {
+        return genreService.save(genre);
+    }
+
+    @PutMapping("/api/{id}")
+    @ResponseBody
+    public Genre updateGenreApi(@PathVariable Integer id, @RequestBody Genre genre) {
+        return genreService.update(id, genre);
+    }
+
+    @DeleteMapping("/api/{id}")
+    @ResponseBody
+    public void deleteGenreApi(@PathVariable Integer id) {
+        genreService.delete(id);
+    }
+
+    @GetMapping("/api/popular")
+    @ResponseBody
+    public List<Genre> getPopularGenresApi() {
+        return genreService.findPopularGenres();
     }
 }

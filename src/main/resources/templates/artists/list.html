@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content">
+        <div class="d-flex justify-content-between mb-4">
+            <h2>Artists</h2>
+            <a href="/artists/new" class="btn btn-success">Add Artist</a>
+        </div>
+        
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Stage Name</th>
+                    <th>Artistic Name</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="artist : ${artists}">
+                    <td th:text="${artist.id}"></td>
+                    <td th:text="${artist.stageName}"></td>
+                    <td th:text="${artist.artisticName}"></td>
+                    <td th:text="${artist.type}"></td>
+                    <td>
+                        <a th:href="@{/artists/edit/{id}(id=${artist.id})}" class="btn btn-sm btn-primary">Edit</a>
+                        <a th:href="@{/artists/delete/{id}(id=${artist.id})}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

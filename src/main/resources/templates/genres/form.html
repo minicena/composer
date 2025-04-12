@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content">
+        <h2 th:text="${genre.id} ? 'Edit Genre' : 'New Genre'"></h2>
+        
+        <form th:action="@{/genres/save}" th:object="${genre}" method="post">
+            <input type="hidden" th:field="*{id}">
+            
+            <div class="form-group mb-3">
+                <label class="form-label required-field">Name</label>
+                <input type="text" class="form-control" th:field="*{name}" required>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" th:field="*{description}" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label class="form-label">Decade Origin</label>
+                <select class="form-select" th:field="*{decadeOrigin}">
+                    <option value="">Select decade...</option>
+                    <option th:each="decade : ${#numbers.sequence(1950, 2020, 10)}" 
+                            th:value="${decade + 's'}"
+                            th:text="${decade + 's'}"
+                            th:selected="${genre.decadeOrigin == decade + 's'}"></option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="/genres" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content">
+        <div class="d-flex justify-content-between mb-4">
+            <h2>Genres</h2>
+            <div>
+                <a href="/genres/new" class="btn btn-success me-2">Add Genre</a>
+                <a href="/genres/popular" class="btn btn-info">Popular Genres</a>
+            </div>
+        </div>
+        
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Decade</th>
+                    <th>Tracks</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="genre : ${genres}">
+                    <td th:text="${genre.id}"></td>
+                    <td th:text="${genre.name}"></td>
+                    <td th:text="${genre.decadeOrigin}"></td>
+                    <td th:text="${genre.tracks.size()}"></td>
+                    <td>
+                        <a th:href="@{/genres/edit/{id}(id=${genre.id})}" 
+                           class="btn btn-sm btn-primary">Edit</a>
+                        <a th:href="@{/genres/delete/{id}(id=${genre.id})}" 
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Are you sure you want to delete this genre?')">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

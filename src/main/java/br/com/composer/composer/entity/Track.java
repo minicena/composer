@@ -30,6 +30,9 @@ public class Track extends Artist {
     
     @Column(name = "track_number")
     private Integer trackNumber;
+
+    @Column(name = "artist_id", insertable = false, updatable = false)
+    private Integer artistId;
     
     public Track(String stageName, String artisticName, LocalDate birthDate, String type,
                 String title, Integer duration, LocalDate releaseDate, Genre genre, 

@@ -1,0 +1,17 @@
+body {
+    padding-bottom: 60px;
+}
+
+.table-actions {
+    white-space: nowrap;
+    width: 1%;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.required-field::after {
+    content: " *";
+    color: red;
+}
